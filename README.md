@@ -18,10 +18,12 @@ There are two different formats in the log_input_data directory.
     FilenameParts:      appname   timestamp(zulu) servername   randomId
  
 Parse filename parts and set as key based on type of file for all files
+
 upload each file, and if successful, move to a local 'completed' directory
+
 output size of file and time it took to upload 
 
 give set of files to hadoop
 
 ## Desired Information
-Average load time per result
+Average load time per result as a histogram hour-by-hour
