@@ -52,8 +52,8 @@ def process_files(from_dir, post_dir, bucket_name):
        total_file_size = total_file_size + os.path.getsize(from_dir_filename)/1024
        bucket.put_object(Key=object_key, Body=from_dir_filename) 
        print ("%s Uploaded: %s with key %s" % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), from_dir_filename, object_key))
-       copy_to(from_dir_filename, post_dir, post_dir_filename)
-       #move_to(from_dir_filename, post_dir, post_dir_filename) 
+       #copy_to(from_dir_filename, post_dir, post_dir_filename)
+       move_to(from_dir_filename, post_dir, post_dir_filename) 
        
   end_time = datetime.now()
   
