@@ -17,11 +17,11 @@ There are two different formats in the log_input_data directory.
     ExampleFileName2: ServiceName_20160910T2340Z_server6_105vwltg.log.gz
     FilenameParts:      appname   timestamp(zulu) servername   randomId
  
-Parse filename parts and set as key based on type of file for all files
+Parse filename parts and set as key based on type of file for all files --done
 
-upload each file, and if successful, move to a local 'completed' directory
+upload each file, and if successful, move to a local 'completed' directory --done
 
-output size of file and time it took to upload 
+output total size of files and total time it took to upload them all --done
 
 give set of files to hadoop
 
