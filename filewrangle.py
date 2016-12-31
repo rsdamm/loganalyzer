@@ -9,12 +9,16 @@ import os
 import shutil
 import commands
 import boto3
-    
+import time
+from datetime import datetime
+import time
+   
 def process_files(from_dir, post_dir, bucket_name):  
   i=0
   s3 = boto3.resource('s3')
   bucket = s3.Bucket(bucket_name)
   exists = True
+  total_file_size = 0
   try:
       s3.meta.client.head_bucket(Bucket=bucket_name)
   except botocore.exceptions.ClientError as e:
@@ -23,8 +27,12 @@ def process_files(from_dir, post_dir, bucket_name):
     error_code = int(e.response['Error']['Code'])
     if error_code == 404:
         exists = False 
+  current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
   if exists:
-     print ("Bucket %s exists" % bucket_name)
+     print ("Start time: %s" % current_time)
+     print ("Bucket %s exists " % bucket_name)
+     print ("Uploading files from directory: %s" % from_dir)
+     print ("Post processing directory : %s " % post_dir)
   else: 
     print ("Bucket %s does not exist -exiting" % bucket_name)
     return
@@ -32,17 +40,27 @@ def process_files(from_dir, post_dir, bucket_name):
   #for filename in filenames:
   filenames = os.listdir(from_dir)
   
+  start_time = datetime.now()  
   for filename in filenames:  
     from_dir_filename = os.path.join(from_dir, filename)
     post_dir_filename = os.path.join(post_dir, filename)
     object_key = get_key(filename)  
+    total_time_to_upload = 0
+    
     if object_key: 
        i+=1
-       print ("Uploading: %s with key %s" % (filename, object_key))
+       total_file_size = total_file_size + os.path.getsize(from_dir_filename)/1024
        bucket.put_object(Key=object_key, Body=from_dir_filename) 
-       #copy_to(from_dir_filename, post_dir, post_dir_filename)
-       move_to(from_dir_filename, post_dir, post_dir_filename) 
-  print ("Uploaded %i files to %s" % (i, bucket_name))
+       print ("%s Uploaded: %s with key %s" % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), from_dir_filename, object_key))
+       copy_to(from_dir_filename, post_dir, post_dir_filename)
+       #move_to(from_dir_filename, post_dir, post_dir_filename) 
+       
+  end_time = datetime.now()
+  
+  #total_time_to_upload = relativedelta(end_time, start_time)
+  total_time_to_upload = end_time - start_time
+    
+  print ("%s ***Processing complete***  File count: %d Size: %d kb Total time to upload:   %s seconds" % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), i, total_file_size, total_time_to_upload.seconds))
   return 
   
 def get_key(filename):
