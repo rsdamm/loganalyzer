@@ -11,6 +11,7 @@ import commands
 import boto3
     
 def process_files(from_dir, post_dir, bucket_name):  
+  i=0
   s3 = boto3.resource('s3')
   bucket = s3.Bucket(bucket_name)
   exists = True
@@ -23,23 +24,25 @@ def process_files(from_dir, post_dir, bucket_name):
     if error_code == 404:
         exists = False 
   if exists:
-     print "Bucket " + bucket_name + " exists" 
+     print ("Bucket %s exists" % bucket_name)
   else: 
-    print "Bucket " + bucket_name + " does not exist -exiting"
+    print ("Bucket %s does not exist -exiting" % bucket_name)
     return
     
   #for filename in filenames:
   filenames = os.listdir(from_dir)
   
   for filename in filenames:  
-    file_dir = os.path.join(from_dir, filename)
+    from_dir_filename = os.path.join(from_dir, filename)
+    post_dir_filename = os.path.join(post_dir, filename)
     object_key = get_key(filename)  
-    print ("Uploading: " + filename)
     if object_key: 
-       bucket.put_object(Key=object_key, Body=file_dir) 
-       copy_to(file_dir, post_dir, filename)
-       #move_to(file_dir, post_dir, filename)
-  #print '\n'.join(result)
+       i+=1
+       print ("Uploading: %s with key %s" % (filename, object_key))
+       bucket.put_object(Key=object_key, Body=from_dir_filename) 
+       #copy_to(from_dir_filename, post_dir, post_dir_filename)
+       move_to(from_dir_filename, post_dir, post_dir_filename) 
+  print ("Uploaded %i files to %s" % (i, bucket_name))
   return 
   
 def get_key(filename):
@@ -65,22 +68,22 @@ def get_doc_format_key(keyparts):
   # return type server date and datetime
   return  keyparts[0] 
   
-def copy_to(file_dir, post_dir, filename): 
+def copy_to(from_file_dir, post_dir, post_dir_file): 
     if not os.path.exists(post_dir):   
         os.mkdir(post_dir)   
 
-    shutil.copy(file_dir, os.path.join(post_dir, filename))
+    shutil.copy(from_file_dir, post_dir_file)
     return
 
-def move_to(file_dir, post_dir, filename): 
+def move_to(from_file_dir, post_dir, post_dir_file): 
     if not os.path.exists(post_dir):   
         os.mkdir(post_dir)   
 
-    shutil.copy(file_dir, os.path.join(post_dir, filename))
+    shutil.move(from_file_dir, post_dir_file)
     return 
     
 def main():
-  print '--------------------------------------------------------------------------'
+  print ('--------------------------------------------------------------------------')
   result = []
   # This basic command line argument parsing code is provided. 
 
@@ -88,11 +91,11 @@ def main():
   # which is the script itself.
   args = sys.argv[1:]
   if not args:
-    print "usage: --[fromdir] dir --[postdir] dir --[bucketname] bucketname";
+    print ("usage: --[fromdir] dir --[postdir] dir --[bucketname] bucketname")
     sys.exit(1)
 
   if len(args) <> 6:
-    print "error: provide from and post processing directories"
+    print ("error: provide from and post processing directories")
     sys.exit(1)
 
   # dir is set from command line
@@ -113,14 +116,14 @@ def main():
     del args[0:2]
         
   if fromdir and postdir and bucketname:
-    print "Source file directory: " + fromdir   
-    print "Post processing directory: " + postdir 
-    print "S3 bucketname: " + bucketname
-    print "  " 
-    print "  " 
+    print ("Source file directory: %s " % fromdir)   
+    print ("Post processing directory: %s" % postdir)
+    print ("S3 bucketname: %s" % bucketname)
+    print ("  ")
+    print ("  " )
     process_files(fromdir, postdir, bucketname)
   else:
-    print '\n'.join(result)
+    print ('\n'.join(result))
  
 if __name__ == "__main__":
   main()
