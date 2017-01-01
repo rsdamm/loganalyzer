@@ -19,6 +19,7 @@ def process_files(from_dir, post_dir, bucket_name):
   bucket = s3.Bucket(bucket_name)
   exists = True
   total_file_size = 0
+  total_time_to_upload = 0
   try:
       s3.meta.client.head_bucket(Bucket=bucket_name)
   except botocore.exceptions.ClientError as e:
@@ -45,7 +46,6 @@ def process_files(from_dir, post_dir, bucket_name):
     from_dir_filename = os.path.join(from_dir, filename)
     post_dir_filename = os.path.join(post_dir, filename)
     object_key = get_key(filename)  
-    total_time_to_upload = 0
     
     if object_key: 
        i+=1
