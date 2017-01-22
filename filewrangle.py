@@ -110,6 +110,7 @@ def main():
   args = sys.argv[1:]
   if not args:
     print ("usage: --[fromdir] dir --[postdir] dir --[bucketname] bucketname")
+    #C:\Users\REnee\git\loganalyzer>py filewrangle.py --fromdir Z:\Programming\log_input_data --postdir Z:\Programming\done_data  --bucketname loganalyzer-bucket
     sys.exit(1)
 
   if len(args) <> 6:
