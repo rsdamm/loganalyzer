@@ -12,7 +12,7 @@ import boto3
 import time
 from datetime import datetime
 import time
-   
+  
 def process_files(from_dir, post_dir, bucket_name):  
   i=0
   s3 = boto3.resource('s3')
