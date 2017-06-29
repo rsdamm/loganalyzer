@@ -25,6 +25,7 @@ def process_files(from_dir, post_dir, bucket_name):
   except botocore.exceptions.ClientError as e:
     # If a client error is thrown, then check that it was a 404 error.
     # If it was a 404 error, then the bucket does not exist.
+    # 
     error_code = int(e.response['Error']['Code'])
     if error_code == 404:
         exists = False 
