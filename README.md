@@ -18,7 +18,7 @@ There are two different formats in the log_input_data directory.
     FilenameParts:      appname   timestamp(zulu) servername   randomId
  
 Parse filename parts and set as key based on type of file for all files --done
-
+ 
 upload each file, and if successful, move to a local 'completed' directory --done
 
 output total size of files and total time it took to upload them all --done
@@ -50,3 +50,6 @@ path: after 443 to first question mark /api/2/reporting/compare/reports/7197173/
 
 ## Desired Information
 Average load time per result as a histogram hour-by-hour
+
+
+Git work
